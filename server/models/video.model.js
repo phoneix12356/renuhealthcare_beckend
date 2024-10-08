@@ -1,5 +1,4 @@
-const mongoose = require("mongoose");
-const { Schema } = mongoose;
+import mongoose , {Schema} from "mongoose";
 
 // Video Schema
 const videoSchema = new Schema(
