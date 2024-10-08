@@ -1,15 +1,19 @@
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
+import { schema } from "./module.model";
 
 const userSchema = new mongoose.Schema({
-    name: { type: String, required: true },
-    email: { type: String, required: true },
-    phone: { type: String, required: true },
-    post: { type: String, required: true },
-    password: { type: String, required: true },
-    createdAt: { type: Date, default: Date.now }, 
-    updatedAt: { type: Date, default: Date.now },
+  name: { type: String, required: true },
+  email: { type: String, required: true },
+  phone: { type: String, required: true },
+  domain: { type: String, required: true },
+  password: { type: String, required: true },
+  completedModules: [{ type: Schema.Types.ObjectId, ref: "Module" }],
+  completedTest: [{ type: Schema.Types.ObjectId, ref: "Test" }],
+  completedVideo: [{ type: Schema.Types.ObjectId, ref: "Video" }],
+  course: { type: Schema.Types.ObjectId, ref: "Course" },
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now },
 });
-
 
 const userModal = mongoose.model("user", userSchema);
 
