@@ -1,5 +1,4 @@
 import mongoose, { Schema } from "mongoose";
-import { schema } from "./module.model";
 
 const userSchema = new mongoose.Schema({
   name: { type: String, required: true },
