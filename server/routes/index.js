@@ -4,7 +4,7 @@ import testRouter from './test.route.js'
 import questions from "./questions.route.js";
 
 const router = express.Router();
-// router.use('/user', userRouter);
+router.use('/user', userRouter);
 router.use('/questions', questions);
 router.use('/test', testRouter);
 
