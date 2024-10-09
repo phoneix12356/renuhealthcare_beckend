@@ -1,20 +1,19 @@
 import express from "express";
-import testModel from "../models/Test.model.js";
+import {
+  getTest,
+  createTest,
+  updateTest,
+  deleteTest,
+} from "../controllers/testController.js";
+
 const router = express.Router();
 
-router.get("/", async (req, res) => {
-  const { _id } = req.body;
-  const testData = await testModel.find({ _id });
-  console.log(testData);
-});
+router.get("/", getTest);
 
-router.post("/", async (req, res) => {
-  try {
-    const testData = await testModel.create(req.body);
-    console.log(testData);
-  } catch (error) {
-    console.log(error.message);
-  }
-});
+router.post("/", createTest);
+
+router.put("/", updateTest);
+
+router.delete("/", deleteTest);
 
 export default router;

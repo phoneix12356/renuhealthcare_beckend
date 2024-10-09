@@ -3,14 +3,9 @@ import express from "express";
 const router = express.Router();
 
 router.get("/", async (req, res) => {
-  const qst = await question.find();
-  console.log(qst);
+   console.log('hello');
 });
 
 router.post("/", async (req, res) => {
-  try {
-    const question = await question.create(req.body);
-  } catch (err) {
-    console.log(err.message);
-  }
+  console.log('hello');
 });
