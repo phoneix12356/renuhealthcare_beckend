@@ -2,7 +2,7 @@ import videoModels from "../models/video.model.js";
 
 export const getVideo = async (req, res) => {
     try {
-        console.log("finds")
+       
         const { videoId } = req.body;  // Consistent naming
         const getVideo = await videoModels.findById(videoId);
         res.status(200).send({ message: "success", getVideo });
@@ -13,11 +13,9 @@ export const getVideo = async (req, res) => {
 
 export const videoUpload = async (req, res) => {
     try {
-        console.log("finds")
-        const { content, isComplete } = req.body;  // Corrected isComplate to isComplete
+        const { content } = req.body;  // Corrected isComplate to isComplete
         const createVideohist = new videoModels({
-            content,
-            isCompleted: isComplete
+            content
         });
         const result = await createVideohist.save();  // Await the save operation
         res.status(200).send(result);
@@ -28,7 +26,6 @@ export const videoUpload = async (req, res) => {
 
 export const updateContentWatchTime = async (req, res) => {
     try {
-        console.log("finds")
         const { videoId, content, isComplete } = req.body;  // Consistent naming
         const watchTimeManage = await videoModels.findById(videoId);  // Use findById instead of find
         if (!watchTimeManage) {
@@ -48,7 +45,6 @@ export const updateContentWatchTime = async (req, res) => {
 
 export const deleteVideos = async (req, res) => {
     try {
-        console.log("finds")
         const { videoId } = req.body;  // Consistent naming
         const deleteVideo = await videoModels.findByIdAndDelete(videoId);
         if (!deleteVideo) {

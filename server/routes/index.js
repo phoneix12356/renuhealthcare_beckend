@@ -9,6 +9,6 @@ const router = express.Router();
 router.use('/user', userRouter);
 router.use('/questions', questions);
 router.use('/test', testRouter);
-router.use('/module', moduleRouter)
-router.use('/video', videoRouter)
+router.use('/module', moduleRouter);
+router.use('/video', videoRouter);
 export default router;

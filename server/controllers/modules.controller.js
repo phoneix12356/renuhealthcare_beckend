@@ -14,18 +14,13 @@ export const addModule = async (req, res) => {
   const { title, testid, videoUrl } = req.body;
   try {
     const modules = new moduleModel({
-      title,
-      videoId: videoUrl,
-      test: testid,
+      title
     });
     const result = await modules.save();
     res.status(200).send(result);
   } catch (err) {
     res.status(402).send({ message: err.message });
   }
-  //add videoUrl to video table
-  // all data to module table
-  //send response
 };
 
 export const deleteModule = async (req, res) => {
