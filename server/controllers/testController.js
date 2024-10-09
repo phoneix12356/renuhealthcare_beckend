@@ -28,17 +28,20 @@ const createTest = async (req, res) => {
 };
 
 const updateTest = async (req, res) => {
-  const { name } = req.body;
-  if (!name) {
-    return res.status(400).json({ message: "Name is required" });
+  const { id } = req.params; 
+  if (!id) {
+    return res.status(400).json({ message: "ID is required" });
   }
   try {
-    const updatedTest = await testModel.findOneAndUpdate({ name }, req.body, {
-      new: true,
+    const updatedTest = await testModel.findByIdAndUpdate(id, req.body, {
+      new: true, 
+      runValidators: true, 
     });
+
     if (!updatedTest) {
-      return res.status(404).json({ message: "Data not found" });
+      return res.status(404).json({ message: "Test not found" });
     }
+
     return res
       .status(200)
       .json({ message: "Successfully updated", data: updatedTest });
@@ -48,14 +51,15 @@ const updateTest = async (req, res) => {
   }
 };
 
+
 const deleteTest = async (req, res) => {
-  const { name } = req.body;
-  if (!name) {
-    return res.status(400).json({ message: "Name is required" });
+  const { id } = req.params; 
+  if (!id) {
+    return res.status(400).json({ message: "ID is required" });
   }
   try {
-    const data = await testModel.deleteOne({ name });
-    if (data.deletedCount === 0) {
+    const deletedTest = await testModel.findByIdAndDelete(id); 
+    if (!deletedTest) {
       return res.status(404).json({ message: "No data found to delete" });
     }
     return res.status(200).json({ message: "Successfully deleted" });
@@ -64,5 +68,6 @@ const deleteTest = async (req, res) => {
     return res.status(500).json({ error: error.message });
   }
 };
+
 
 export { getTest, createTest, updateTest, deleteTest };

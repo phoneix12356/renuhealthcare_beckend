@@ -1,17 +1,20 @@
 import mongoose, { Schema } from "mongoose";
 
 // Answer Schema
-
 const answerSchema = new Schema(
   {
     correctAnswer: { type: String, required: true },
-    questionId: {
-      type: Schema.Types.ObjectId,
-      ref: "Question",
+    modulename: {
+      type: String,
+      required: true,
+    },
+    questionNumber: {
+      type: Number, 
       required: true,
     },
   },
   { timestamps: true }
 );
 
-module.exports = mongoose.model("Answer", answerSchema);
+const Answer = mongoose.model("Answer", answerSchema);
+export default Answer;
