@@ -1,4 +1,5 @@
 import mongoose, { Schema } from "mongoose";
+
 // Video Schema
 const videoSchema = new Schema(
   {
