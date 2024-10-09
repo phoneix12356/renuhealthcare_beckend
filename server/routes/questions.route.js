@@ -1,11 +1,11 @@
-import question from "../models/Question.model";
+
 import express from "express";
+import { getQuestions, addQuestions } from "../controllers/questionsController.js";
+
 const router = express.Router();
 
-router.get("/", async (req, res) => {
-   console.log('hello');
-});
 
-router.post("/", async (req, res) => {
-  console.log('hello');
-});
+router.get("/", getQuestions);
+router.post("/", addQuestions);
+
+export default router;
