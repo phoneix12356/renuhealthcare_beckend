@@ -1,5 +1,6 @@
 import videoModels from "../models/video.model.js";
 
+
 export const getVideo = async (req, res) => {
     try {
        
@@ -10,6 +11,9 @@ export const getVideo = async (req, res) => {
         res.status(400).send({ message: err.message });  // Sending a message object
     }
 }
+
+
+
 
 export const videoUpload = async (req, res) => {
     try {
@@ -23,6 +27,9 @@ export const videoUpload = async (req, res) => {
         res.status(400).send({ message: err.message });  // Sending a message object
     }
 }
+
+
+
 
 export const updateContentWatchTime = async (req, res) => {
     try {
@@ -43,6 +50,8 @@ export const updateContentWatchTime = async (req, res) => {
     }
 }
 
+
+
 export const deleteVideos = async (req, res) => {
     try {
         const { videoId } = req.body;  // Consistent naming
@@ -55,3 +64,8 @@ export const deleteVideos = async (req, res) => {
         res.status(400).send({ message: err.message });
     }
 }
+
+
+
+
+
