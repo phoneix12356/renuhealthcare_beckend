@@ -1,5 +1,5 @@
 import Course from "../models/Course.model";
-import Test from "../models/Test.model";
+import Module from "../models/module.model";
 import User from "../models/User.model";
 
 // Course Controller
@@ -83,26 +83,26 @@ const courseController = {
   },
 
   // Add an existing test to a course
-  async addTestToCourse(req, res) {
-    const { courseId, testId } = req.body; // Expecting courseId and testId in the request body
+  async addModuleToCourse(req, res) {
+    const { courseId, moduleId } = req.body; // Expecting courseId and testId in the request body
     try {
       const course = await Course.findById(courseId);
-      const test = await Test.findById(testId);
+      const module = await Module.findById(moduleId);
 
       if (!course) return res.status(404).json({ message: "Course not found" });
-      if (!test) return res.status(404).json({ message: "Test not found" });
+      if (!module) return res.status(404).json({ message: "Test not found" });
 
       // Check if the test is already associated with the course
-      if (course.test.includes(testId)) {
+      if (course.module.includes(moduleId)) {
         return res
           .status(400)
           .json({ message: "Test is already added to this course" });
       }
 
       // Add the test to the course
-      course.test.push(testId);
+      course.module.push(moduleId);
       await course.save();
-      res.status(200).json({ message: "Test added to course", course });
+      res.status(200).json({ message: "Module added to course", course });
     } catch (err) {
       res.status(400).json({ message: err.message });
     }

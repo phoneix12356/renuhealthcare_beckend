@@ -12,8 +12,8 @@ router.get("/", getTest);
 
 router.post("/", createTest);
 
-router.put("/", updateTest);
+router.patch("/:id", updateTest);
 
-router.delete("/", deleteTest);
+router.delete("/:id", deleteTest);
 
 export default router;
