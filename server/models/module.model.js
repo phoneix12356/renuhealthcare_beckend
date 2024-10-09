@@ -11,4 +11,6 @@ const moduleSchema = new Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("Module", moduleSchema);
+const moduleModel = mongoose.model("Module", moduleSchema);
+
+export default moduleModel
