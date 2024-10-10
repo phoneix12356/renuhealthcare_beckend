@@ -6,6 +6,7 @@ import Certificate from '../models/Certificate.js';
 
 // register new user...
 const userRegistration = async (req, res) => {
+    console.log("Hello", req.body);
     const { name, email, phone, post, password} = req.body;
 
     try {
@@ -29,7 +30,7 @@ const userRegistration = async (req, res) => {
             email: email,
             phone: phone,
             post: post,
-            password: hashPassword
+            password: hashPassword,
         });
 
         // Save the new user to the database
@@ -50,6 +51,7 @@ const userRegistration = async (req, res) => {
 
 //  user login..
 const userLogin = async (req, res) => {
+    console.log(req.body, "hello user login");
     try {
         const { email, password } = req.body;
         if (email && password) {

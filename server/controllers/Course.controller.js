@@ -1,6 +1,6 @@
-import Course from "../models/Course.model";
-import Module from "../models/module.model";
-import User from "../models/User.model";
+import Course from "../models/Course.model.js";
+import Module from "../models/module.model.js";
+import User from "../models/User.js"
 
 // Course Controller
 const courseController = {
@@ -109,4 +109,4 @@ const courseController = {
   },
 };
 
-module.exports = courseController;
+export default courseController;
