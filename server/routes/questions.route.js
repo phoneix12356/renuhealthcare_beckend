@@ -1,5 +1,3 @@
-// import question from "../models/Question.model";
-import Question from "../models/Question.model.js";
 import express from "express";
 import mongoose from "mongoose";
 const router = express.Router();
