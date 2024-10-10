@@ -5,6 +5,6 @@ const questionSchema = new Schema({
   options: [{ type: String, required: true }],
   correctAnswer: { type: Number, required: true },
 });
-
+questionSchema.index({ questionText: 1 });
 const questionModel = mongoose.model("Question", questionSchema);
 export default questionModel;
