@@ -1,34 +1,34 @@
-import express from 'express';
+// index.js
 import dotenv from 'dotenv';
+import express from 'express';
 import cors from 'cors';
 import connectDb from './config/connectdb.js';
-import userRoutes from './routes/userRoutes.js';
-
+import routes from './routes/index.js'; 
 dotenv.config();
 
 const app = express();
-const port =  5000;
 
-connectDb();
 
-// Custom logger middleware
-app.use((req, res, next) => {
-  console.log(req.body);
-  console.log(`${req.method} ${req.url} - ${new Date().toISOString()}`);
-  next();
-});
+connectDb()
+  .then(() => {
+    // Start the server after successful connection
+    app.listen(port, () => {
+        console.log(`Server listening at localhost:${port}`);
+    });
+  })
+  .catch(err => {
+    console.error('Failed to start server:', err);
+    process.exit(1); // Exit the process with a non-zero exit code
+  });// Call the connectDb function
 
-app.use(cors({
-  origin: '*',
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
 
+const port = process.env.PORT||5000;
+
+app.use(cors());
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
-app.use('/api/users', userRoutes);
+// Load Routes
+app.use('/api', routes);
 
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
-});
+
+//MONGODB_URI=mongodb+srv://anshul:anshul112@clusterdatabase.24furrx.mongodb.net/renuapp?retryWrites=true&w=majority&appName=ClusterDatabase

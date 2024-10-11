@@ -3,11 +3,6 @@ import mongoose, { Schema } from "mongoose";
 const questionSchema = new Schema({
   questionText: { type: String, required: true },
   options: [{ type: String, required: true }],
-  correctAnswer: { type: Number, required: true },
-  modulename: {
-    type: String,
-    required: true,
-  },
 });
 questionSchema.index({ questionText: 1 });
 const questionModel = mongoose.model("Question", questionSchema);

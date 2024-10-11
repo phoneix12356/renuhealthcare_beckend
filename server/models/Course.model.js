@@ -4,7 +4,11 @@ import mongoose, { Schema } from "mongoose";
 const courseSchema = new Schema(
   {
     title: { type: String, required: true },
-    module: [{ type: Schema.Types.ObjectId, ref: "Module" }],
+    modulesName: {
+      type: [String],
+      required: true,
+    },
+    modulesIds: [{ type: Schema.Types.ObjectId, ref: "Module" }],
     isCompleted: { type: Boolean, default: false },
   },
   { timestamps: true }
