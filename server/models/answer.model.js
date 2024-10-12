@@ -3,18 +3,16 @@ import mongoose, { Schema } from "mongoose";
 // Answer Schema
 const answerSchema = new Schema(
   {
-    correctAnswer: { type: String, required: true },
-    modulename: {
-      type: String,
-      required: true,
-    },
-    questionNumber: {
-      type: Number, 
+    answer: { type: String, required: true },
+    questionId: {
+      type: Schema.Types.ObjectId,
+      ref: "Question",
       required: true,
     },
   },
   { timestamps: true }
 );
+answerSchema.index({ questionId: 1 });
 
 const Answer = mongoose.model("Answer", answerSchema);
 export default Answer;

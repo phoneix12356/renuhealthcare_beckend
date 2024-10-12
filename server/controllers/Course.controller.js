@@ -1,14 +1,31 @@
-import Course from "../models/Course.model";
-import Module from "../models/module.model";
-import User from "../models/User.model";
+import Course from "../models/Course.model.js";
+import moduleModel from "../models/module.model.js";
+import Module from "../models/module.model.js";
+import User from "../models/User.js";
 
 // Course Controller
 const courseController = {
   // Add a new course
+
   async addCourse(req, res) {
-    const { title, module } = req.body;
+    console.log(req.body);
     try {
-      const course = await Course.create({ title, module });
+      // Fetch module data and resolve all promises
+      const modulesIds = await Promise.all(
+        req.body.modulesName.map(async (modulename) => {
+          const moduleData = await moduleModel.findOne({ title: modulename });
+          console.log(moduleData);
+          return moduleData ? moduleData._id : null; // Return the module ID or null if not found
+        })
+      );
+      console.log(modulesIds);
+      // Filter out any null values (in case some modules weren't found)
+      const validModuleIds = modulesIds.filter((id) => id !== null);
+      console.log(validModuleIds);
+      req.body.modulesIds = validModuleIds;
+      console.log(req.body);
+      // Create the course with the resolved module IDs
+      const course = await Course.create(req.body);
       res.status(201).json(course);
     } catch (err) {
       res.status(400).json({ message: err.message });
@@ -35,6 +52,8 @@ const courseController = {
       res.status(400).json({ message: err.message });
     }
   },
+
+  
 
   // Update a course by ID
   async updateCourse(req, res) {
@@ -107,4 +126,4 @@ const courseController = {
   },
 };
 
-module.exports = courseController;
+export default courseController;

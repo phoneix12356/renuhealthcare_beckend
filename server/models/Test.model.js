@@ -16,10 +16,6 @@ const testSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    moduleId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Module",
-    },
     length: {
       type: Number,
     },

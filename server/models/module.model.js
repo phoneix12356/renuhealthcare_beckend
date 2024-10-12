@@ -6,12 +6,12 @@ const moduleSchema = new Schema(
     title: { type: String, required: true },
     videoId: [{ type: Schema.Types.ObjectId, ref: "Video" }],
     test: { type: Schema.Types.ObjectId, ref: "Test" },
+    testName: { type: String, required: true },
     isCompleted: { type: Boolean, default: false },
   },
   { timestamps: true }
 );
 
-
 const moduleModel = mongoose.model("Module", moduleSchema);
 
-export default moduleModel
+export default moduleModel;
