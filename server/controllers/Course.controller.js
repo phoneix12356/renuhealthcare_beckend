@@ -28,9 +28,7 @@ const courseController = {
   // Get a course by ID
   async getCourseById(req, res) {
     try {
-      const course = await Course.findById(req.params.id)
-        .populate("module")
-        .populate("test");
+      const course = await Course.findById(req.params.id);
       if (!course) return res.status(404).json({ message: "Course not found" });
       res.status(200).json(course);
     } catch (err) {
@@ -96,7 +94,7 @@ const courseController = {
       if (course.module.includes(moduleId)) {
         return res
           .status(400)
-          .json({ message: "Test is already added to this course" });
+          .json({ message: "Module is already added to this course" });
       }
 
       // Add the test to the course
