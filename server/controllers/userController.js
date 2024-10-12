@@ -60,7 +60,6 @@ const userRegistration = async (req, res) => {
 
 //  user login..
 const userLogin = async (req, res) => {
-  console.log(req.body, "hello user login");
   try {
     const { email, password } = req.body;
     if (email && password) {
@@ -122,7 +121,6 @@ const sendEmailResetPassword = async (req, res) => {
       const secret = user._id + process.env.JWT_SECRET_KEY;
       const token = jwt.sign({ userID: user._id }, secret, { expiresIn: "1d" });
       const link = `http://127.0.0.1:3000/api/user/reset/${user._id}/${token}`;
-      console.log(link, "starting token");
       res.send({ status: "success", message: "Email sent successfully" });
     } else {
       res.send({ status: "failed", message: "Email does not exist" });
@@ -139,7 +137,6 @@ const userPasswordReset = async (req, res) => {
   const user = await userModal.findById(id);
   const new_secret = user._id + process.env.JWT_SECRET_KEY;
   try {
-    console.log(token, "xxxxx", new_secret);
     jwt.verify(token, new_secret);
     if (password && cpassword) {
       if (password === cpassword) {
@@ -169,7 +166,6 @@ const download = async (req, res) => {
     const userId = req.user._id;
 
     const certificate = await Certificate.findOne({ userId });
-    console.log(certificate);
     // If certificate not found
     if (!certificate) {
       return res.status(404).send("Certificate not found");
@@ -190,6 +186,129 @@ const download = async (req, res) => {
   }
 };
 
+const addCompletedModuleToUserDatabase = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const courseId = req.user.course;
+    const completedModuleId = req.body.moduleId;
+
+    // Check if the module ID is provided
+    if (!completedModuleId) {
+      return res.status(400).json({ message: "Module ID is required" });
+    }
+
+    // Find the user and update the completedModules array
+    const updatedUser = await userModal.findByIdAndUpdate(
+      userId,
+      { $addToSet: { completedModules: completedModuleId } },
+      { new: true, runValidators: true }
+    );
+
+    const courseDetails = await courseModel.findById(courseId);
+
+
+    if (updatedUser.completedModules.length >= courseDetails.modulesIds.length) {
+      console.log(updatedUser);
+      const updatedUser1 = await userModal.findByIdAndUpdate(
+        userId,
+        { $addToSet: { completedCourses: courseDetails._id } },
+        { new: true, runValidators: true }
+      );
+    }
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Update the updatedAt field
+    updatedUser.updatedAt = new Date();
+    await updatedUser.save();
+
+    console.log(updatedUser);
+    return res.status(200).json({
+      message: "Completed module added successfully",
+      user: updatedUser,
+    });
+  } catch (error) {
+    console.error("Error adding completed module:", error.message);
+    return res
+      .status(500)
+      .json({ message: "Internal server error", error: error.message });
+  }
+};
+const addCompletedTestToUserDatabase = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const completedTestId = req.body.testId;
+
+    // Check if the module ID is provided
+    if (!completedTestId) {
+      return res.status(400).json({ message: "Module ID is required" });
+    }
+
+    // Find the user and update the completedModules array
+    const updatedUser = await userModal.findByIdAndUpdate(
+      userId,
+      { $addToSet: { completedTest: completedModuleId } },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Update the updatedAt field
+    updatedUser.updatedAt = new Date();
+    await updatedUser.save();
+
+    return res.status(200).json({
+      message: "Completed module added successfully",
+      user: updatedUser,
+    });
+  } catch (error) {
+    console.error("Error adding completed module:", error);
+    return res
+      .status(500)
+      .json({ message: "Internal server error", error: error.message });
+  }
+};
+const addFullWatchedToUserDatabase = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const watchedVideoId = req.body.videoId;
+
+    // Check if the module ID is provided
+    if (!watchedVideoId) {
+      return res.status(400).json({ message: "watchedVideoId ID is required" });
+    }
+
+    // Find the user and update the completedModules array
+    const updatedUser = await userModal.findByIdAndUpdate(
+      userId,
+      { $addToSet: { completedVideo: watchedVideoId } },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Update the updatedAt field
+    updatedUser.updatedAt = new Date();
+    await updatedUser.save();
+
+    return res.status(200).json({
+      message: "Completed module added successfully",
+      user: updatedUser,
+    });
+  } catch (error) {
+    console.error("Error adding completed module:", error);
+    return res
+      .status(500)
+      .json({ message: "Internal server error", error: error.message });
+  }
+};
+
 export {
   userRegistration,
   userLogin,
@@ -197,4 +316,7 @@ export {
   sendEmailResetPassword,
   userPasswordReset,
   download,
+  addCompletedModuleToUserDatabase,
+  addCompletedTestToUserDatabase,
+  addFullWatchedToUserDatabase,
 };

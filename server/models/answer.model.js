@@ -3,7 +3,7 @@ import mongoose, { Schema } from "mongoose";
 // Answer Schema
 const answerSchema = new Schema(
   {
-    answer: { type: String, required: true },
+    answer: { type: String, required: true, trim: true, lowercase: true },
     questionId: {
       type: Schema.Types.ObjectId,
       ref: "Question",
@@ -12,6 +12,7 @@ const answerSchema = new Schema(
   },
   { timestamps: true }
 );
+
 answerSchema.index({ questionId: 1 });
 
 const Answer = mongoose.model("Answer", answerSchema);

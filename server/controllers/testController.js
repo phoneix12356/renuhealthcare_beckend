@@ -1,57 +1,67 @@
 import questionModel from "../models/Question.model.js";
 import testModel from "../models/Test.model.js";
 
-// Get Test
-const getTest = async (req, res) => {
-  console.log("get Test");
-  const { name } = req.query;
+// Get all tests
+export const getAllTests = async (req, res) => {
   try {
-    const testData = await testModel.find({ name }).populate("questions"); // Populate to get question details
-    if (!testData.length) {
-      return res.status(404).json({ message: "No data found" });
+    const tests = await testModel.find().populate("questions");
+    if (!tests.length) {
+      return res.status(404).json({ message: "No tests found" });
     }
-    return res.status(200).json(testData);
+    res.status(200).json(tests);
   } catch (error) {
-    console.log(error.message);
-    return res.status(500).json({ error: error.message });
+    console.error(error.message);
+    res.status(500).json({ error: "Server error" });
   }
 };
 
-// Create Test
-const createTest = async (req, res) => {
+// Get a test by ID
+export const getTestById = async (req, res) => {
+  const { id } = req.params;
+
   try {
-    console.log("test", req.body);
+    const test = await testModel.findById(id).populate("questions");
+    if (!test) {
+      return res.status(404).json({ message: "Test not found" });
+    }
+    res.status(200).json(test);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ error: "Server error" });
+  }
+};
 
-    // Fetch all questions from the database automatically
-    const questionsData = await questionModel.find({});
+// Create a new test
+export const createTest = async (req, res) => {
+  try {
+    const { title } = req.body;
 
-    if (!questionsData.length) {
-      return res.status(404).json({ message: "No questions found to link" });
+    // Fetch all questions based on the title
+    const questions = await questionModel.find({ title });
+    if (!questions.length) {
+      return res.status(404).json({ message: "No questions found" });
     }
 
-    // Link the fetched question IDs to the test
-    const questionIds = questionsData.map((item) => item._id);
-    req.body.questions = questionIds; // Automatically setting the questions field
+    // Map question IDs
+    const questionIds = questions.map((q) => q._id);
 
-    const newTest = await testModel.create(req.body);
+    // Create the new test with the fetched question IDs
+    const newTest = await testModel.create({ ...req.body, questions: questionIds });
 
-    return res.status(201).json({
-      message:
-        "Test successfully created. You can retrieve the test using the getTest function.",
+    res.status(201).json({
+      message: "Test created successfully",
       data: newTest,
     });
   } catch (error) {
-    console.log(error.message);
-    return res.status(400).json({ error: error.message });
+    console.error(error.message);
+    res.status(500).json({ error: "Server error" });
   }
 };
 
-// Update Test
-const updateTest = async (req, res) => {
+// Update a test by ID
+export const updateTest = async (req, res) => {
   const { id } = req.params;
-  if (!id) {
-    return res.status(400).json({ message: "ID is required" });
-  }
+
   try {
     const updatedTest = await testModel.findByIdAndUpdate(id, req.body, {
       new: true,
@@ -62,31 +72,28 @@ const updateTest = async (req, res) => {
       return res.status(404).json({ message: "Test not found" });
     }
 
-    return res
-      .status(200)
-      .json({ message: "Successfully updated", data: updatedTest });
+    res.status(200).json({
+      message: "Test updated successfully",
+      data: updatedTest,
+    });
   } catch (error) {
-    console.log(error.message);
-    return res.status(500).json({ error: error.message });
+    console.error(error.message);
+    res.status(500).json({ error: "Server error" });
   }
 };
 
-// Delete Test
-const deleteTest = async (req, res) => {
+// Delete a test by ID
+export const deleteTest = async (req, res) => {
   const { id } = req.params;
-  if (!id) {
-    return res.status(400).json({ message: "ID is required" });
-  }
+
   try {
     const deletedTest = await testModel.findByIdAndDelete(id);
     if (!deletedTest) {
-      return res.status(404).json({ message: "No data found to delete" });
+      return res.status(404).json({ message: "Test not found" });
     }
-    return res.status(200).json({ message: "Successfully deleted" });
+    res.status(200).json({ message: "Test deleted successfully" });
   } catch (error) {
-    console.log(error.message);
-    return res.status(500).json({ error: error.message });
+    console.error(error.message);
+    res.status(500).json({ error: "Server error" });
   }
 };
-
-export { getTest, createTest, updateTest, deleteTest };

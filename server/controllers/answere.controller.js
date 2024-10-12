@@ -1,64 +1,65 @@
-import Answer from '../models/answer.model.js';
+import Answer from "../models/answer.model.js";
+
+export const getAnswerByQuestionId = async (req, res) => {
+  try {
+    const { qid } = req.params;
+    const data = await Answer.findOne({ questionId: qid });
+    if (!data) {
+      return res.status(404).json({ message: "Answer not found" });
+    }
+    return res.status(200).json(data);
+  } catch (error) {
+    console.error(error.message);
+    return res.status(500).json({ error: error.message });
+  }
+};
 
 export const getAnswer = async (req, res) => {
-  const { modulename, questionNumber } = req.query;
-  
   try {
-    const answer = await Answer.findOne({ modulename, questionNumber });
-    if (!answer) {
-      return res.status(404).json({ error: 'Answer not found' });
-    }
-    return res.status(200).json(answer);
-  } catch (err) {
-    console.error(err.message);
-    return res.status(400).json({ error: err.message });
+    const answers = await Answer.find();
+    return res.status(200).json(answers);
+  } catch (error) {
+    console.error(error.message);
+    return res.status(500).json({ error: error.message });
   }
 };
 
 export const createAnswer = async (req, res) => {
   try {
-    const answer =  await Answer.insertMany(req.body);
-  
-    console.log(answer);
+    const answer = await Answer.insertMany(req.body);
     return res.status(201).json(answer);
-  } catch (err) {
-    console.error(err.message);
-    return res.status(400).json({ error: err.message });
+  } catch (error) {
+    console.error(error.message);
+    return res.status(500).json({ error: error.message });
   }
 };
 
 export const updateAnswer = async (req, res) => {
-  const { modulename, questionNumber } = req.query;
-  
+  const { id } = req.params;
+
   try {
-    const answer = await Answer.findOneAndUpdate(
-      { modulename, questionNumber },
-      req.body,
-      { new: true } 
-    );
+    const answer = await Answer.findByIdAndUpdate(id, req.body, { new: true });
     if (!answer) {
-      return res.status(404).json({ error: 'Answer not found' });
+      return res.status(404).json({ message: "Answer not found" });
     }
-    console.log(answer);
     return res.status(200).json(answer);
-  } catch (err) {
-    console.error(err.message);
-    return res.status(400).json({ error: err.message });
+  } catch (error) {
+    console.error(error.message);
+    return res.status(500).json({ error: error.message });
   }
 };
 
 export const deleteAnswer = async (req, res) => {
-  const { modulename, questionNumber } = req.query;
-  
+  const { id } = req.params;
+
   try {
-    const answer = await Answer.findOneAndDelete({ modulename, questionNumber });
+    const answer = await Answer.findByIdAndDelete(id);
     if (!answer) {
-      return res.status(404).json({ error: 'Answer not found' });
+      return res.status(404).json({ message: "Answer not found" });
     }
-    console.log(`Deleted answer: ${answer}`);
-    return res.status(200).json({ message: 'Answer deleted successfully' });
-  } catch (err) {
-    console.error(err.message);
-    return res.status(400).json({ error: err.message });
+    return res.status(200).json({ message: "Answer deleted successfully" });
+  } catch (error) {
+    console.error(error.message);
+    return res.status(500).json({ error: error.message });
   }
 };

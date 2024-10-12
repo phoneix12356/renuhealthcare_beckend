@@ -44,10 +44,9 @@ const courseController = {
 
   // Get a course by ID
   async getCourseById(req, res) {
+    console.log(req.params);
     try {
-      const course = await Course.findById(req.params.id)
-        .populate("module")
-        .populate("test");
+      const course = await Course.findById(req.params.id);
       if (!course) return res.status(404).json({ message: "Course not found" });
       res.status(200).json(course);
     } catch (err) {

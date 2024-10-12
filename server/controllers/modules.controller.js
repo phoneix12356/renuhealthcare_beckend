@@ -2,99 +2,126 @@ import moduleModel from "../models/module.model.js";
 import TestModel from "../models/Test.model.js";
 import videoModels from "../models/video.model.js";
 
-// Get module by videoId (optimized with consistent error codes and structure)
-export const getModules = async (req, res) => {
+// Get module by ID (Optimized)
+export const getModulesById = async (req, res) => {
   try {
-    const { videoId } = req.body;
-    if (!videoId) {
-      return res.status(400).send({ message: "videoId is required" });
+    const { id } = req.params;
+
+    if (!id) {
+      return res.status(400).json({ message: "Module ID is required" });
     }
-    const module = await moduleModel.findById(videoId);
+
+    const module = await moduleModel
+      .findById(id)
+      .populate("videoId")
+      .populate("test");
+
     if (!module) {
-      return res.status(404).send({ message: "Module not found" });
+      return res.status(404).json({ message: "Module not found" });
     }
-    res.status(200).send(module);
+
+    res.status(200).json(module);
   } catch (err) {
-    res.status(500).send({ message: err.message });
+    console.error(err.message);
+    res.status(500).json({ error: "Server error" });
   }
 };
 
-// Add module (optimized by using async/await and handling missing fields)
+// Add a module (Optimized)
 export const addModule = async (req, res) => {
   try {
-    const { testName, title } = req.body;
-    
-    if (!testName || !title) {
-      return res.status(400).send({ message: "testName and title are required" });
+    const { title } = req.body;
+
+    if (!title) {
+      return res
+        .status(400)
+        .json({ message: "Test name and module title are required" });
     }
 
-    const testData = await TestModel.findOne({ name: testName });
-    if (!testData) {
-      return res.status(404).send({ message: "Test not found" });
+    // Fetch test by title
+    const test = await TestModel.findOne({ title });
+    if (!test) {
+      return res.status(404).json({ message: "Test not found" });
     }
 
-    const videos = await videoModels.find({ moduleName: title });
+    // Fetch videos by title
+    const videos = await videoModels.find({ title });
     if (!videos.length) {
-      return res.status(404).send({ message: "No videos found for the module" });
+      return res
+        .status(404)
+        .json({ message: "No videos found for the module" });
     }
 
-    const videoIds = videos.map((item) => item._id);
+    // Create new module
     const newModule = await moduleModel.create({
       ...req.body,
-      test: testData._id,
-      videoId: videoIds,
+      test: test._id,
+      videoId: videos.map((video) => video._id),
     });
 
-    res.status(201).send(newModule);
+    res.status(201).json(newModule);
   } catch (err) {
-    res.status(500).send({ message: err.message });
+    console.error(err.message);
+    res.status(500).json({ error: "Server error" });
   }
 };
 
-// Delete module by videoId (optimized with better validation)
+// Delete a module by ID (Optimized)
 export const deleteModule = async (req, res) => {
   try {
     const { videoId } = req.body;
+
     if (!videoId) {
-      return res.status(400).send({ message: "videoId is required" });
+      return res.status(400).json({ message: "Video ID is required" });
     }
 
     const deletedModule = await moduleModel.findByIdAndDelete(videoId);
+
     if (!deletedModule) {
-      return res.status(404).send({ message: "Module not found" });
+      return res.status(404).json({ message: "Module not found" });
     }
 
-    res.status(200).send({ message: "Module successfully deleted", deletedModule });
+    res
+      .status(200)
+      .json({ message: "Module deleted successfully", deletedModule });
   } catch (err) {
-    res.status(500).send({ message: err.message });
+    console.error(err.message);
+    res.status(500).json({ error: "Server error" });
   }
 };
 
-// Update module (optimized with better structure and validation)
+// Update a module (Optimized)
 export const updateModule = async (req, res) => {
   try {
-    const { title, videoId, test, moduleId } = req.body;
+    const { moduleId, title, videoId, test } = req.body;
 
     if (!moduleId) {
-      return res.status(400).send({ message: "moduleId is required" });
+      return res.status(400).json({ message: "Module ID is required" });
     }
 
-    const updateContent = {
+    const updateData = {
       ...(title && { title }),
       ...(videoId && { videoId }),
       ...(test && { test }),
     };
 
-    const updatedModule = await moduleModel.findByIdAndUpdate(moduleId, updateContent, {
-      new: true,
-    });
+    const updatedModule = await moduleModel.findByIdAndUpdate(
+      moduleId,
+      updateData,
+      {
+        new: true,
+      }
+    );
 
     if (!updatedModule) {
-      return res.status(404).send({ message: "Module not found" });
+      return res.status(404).json({ message: "Module not found" });
     }
 
-    res.status(200).send({ message: "Module successfully updated", updatedModule });
+    res
+      .status(200)
+      .json({ message: "Module updated successfully", updatedModule });
   } catch (err) {
-    res.status(500).send({ message: err.message });
+    console.error(err.message);
+    res.status(500).json({ error: "Server error" });
   }
 };

@@ -1,14 +1,17 @@
 import express from "express";
 import {
-  getTest,
+  getAllTests,
   createTest,
   updateTest,
   deleteTest,
+  getTestById,
 } from "../controllers/testController.js";
 
 const router = express.Router();
 
-router.get("/", getTest);
+router.get("/getalltest", getAllTests);
+
+router.get("/:id", getTestById);
 
 router.post("/", createTest);
 

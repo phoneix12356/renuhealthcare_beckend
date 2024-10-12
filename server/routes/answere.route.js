@@ -4,11 +4,14 @@ import {
   createAnswer,
   updateAnswer,
   deleteAnswer,
+  getAnswerByQuestionId
 } from "../controllers/answere.controller.js";
 
 const router = express.Router();
 
 router.get("/", getAnswer);
+
+router.get("/:qid", getAnswerByQuestionId);
 
 router.post("/", createAnswer);
 

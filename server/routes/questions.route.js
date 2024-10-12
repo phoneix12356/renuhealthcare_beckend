@@ -3,14 +3,17 @@ import {
   getQuestions,
   addQuestions,
   updateQuestion,
-  deleteQuestion
-} from "../controllers/questionsController.js"; // Ensure the path is correct
+  deleteQuestion,
+  getQuestionById
+} from "../controllers/questionsController.js";
 
 const router = express.Router();
 
-router.get("/", getQuestions);
+// Define routes in order of specificity
+router.get("/getall", getQuestions);
+router.get("/:id", getQuestionById);
 router.post("/", addQuestions);
-router.put("/", updateQuestion); // Update a question using query params
-router.delete("/", deleteQuestion); // Delete a question using query params
+router.put("/:id", updateQuestion);
+router.delete("/:id", deleteQuestion);
 
 export default router;

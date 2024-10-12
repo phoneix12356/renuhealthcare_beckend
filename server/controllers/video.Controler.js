@@ -1,41 +1,32 @@
 import videoModels from "../models/video.model.js";
 
-export const getVideo = async (req, res) => {
+export const getVideoById = async (req, res) => {
   try {
-    const { videoId } = req.body; // Consistent naming
-    const getVideo = await videoModels.findById(videoId);
+    const { vid } = req.params; // Consistent naming
+    const getVideo = await videoModels.findById(vid);
+    res.status(200).send({ message: "success", getVideo });
+  } catch (err) {
+    res.status(400).send({ message: err.message }); // Sending a message object
+  }
+};
+export const getAllVideo = async (req, res) => {
+  try {
+    const getVideo = await videoModels.find({});
     res.status(200).send({ message: "success", getVideo });
   } catch (err) {
     res.status(400).send({ message: err.message }); // Sending a message object
   }
 };
 
-// export const videoUpload = async (req, res) => {
-//   try {
-//     console.log(req.body);
-//     const newVideo = await videoModels.create(req.body);
-//     // const createVideohist = new videoModels(req.body);
-//     // const result = await createVideohist.save(); // Await the save operation
-//     res.status(200).send(result);
-//   } catch (err) {
-//     res.status(400).send({ message: err.message }); // Sending a message object
-//   }
-// };
-
 export const videoUpload = async (req, res) => {
+  console.log("video Post");
   try {
-    // Validate that ContentUrl is an array
-    if (!Array.isArray(req.body.ContentUrl)) {
-      return res
-        .status(400)
-        .send({ message: "ContentUrl must be an array of strings" });
-    }
-
+    console.log(req.body);
     const createVideohist = new videoModels(req.body);
-    const result = await createVideohist.save();
+    const result = await createVideohist.save(); // Await the save operation
     res.status(200).send(result);
   } catch (err) {
-    res.status(400).send({ message: err.message });
+    res.status(400).send({ message: err.message }); // Sending a message object
   }
 };
 
