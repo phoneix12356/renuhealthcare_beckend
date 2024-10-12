@@ -114,7 +114,7 @@ const courseController = {
       if (course.module.includes(moduleId)) {
         return res
           .status(400)
-          .json({ message: "Test is already added to this course" });
+          .json({ message: "Module is already added to this course" });
       }
 
       // Add the test to the course
