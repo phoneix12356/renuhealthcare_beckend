@@ -8,7 +8,7 @@ import {
 
 const router = express.Router();
 
-router.get("/", getAnswer);
+router.get("/get-answers", getAnswer);
 
 router.post("/", createAnswer);
 

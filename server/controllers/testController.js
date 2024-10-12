@@ -2,14 +2,33 @@ import questionModel from "../models/Question.model.js";
 import testModel from "../models/Test.model.js";
 
 // Get Test
-const getTest = async (req, res) => {
-  console.log("get Test");
-  const { name } = req.query;
+const getAllTest = async (req, res) => {
   try {
-    const testData = await testModel.find({ name }).populate("questions"); // Populate to get question details
+    const testData = await testModel.find().populate("questions"); // Populate to get question details
     if (!testData.length) {
       return res.status(404).json({ message: "No data found" });
     }
+    return res.status(200).json(testData);
+  } catch (error) {
+    console.log(error.message);
+    return res.status(500).json({ error: error.message });
+  }
+};
+const getTestbyId = async (req, res) => {
+  console.log("Hello");
+  const { id } = req.params;
+  console.log(id);
+
+  try {
+    // Find the test by ID and populate the questions field
+    const testData = await testModel.find({ _id: id }).populate("questions");
+
+    // If no test data is found, return 404
+    if (!testData) {
+      return res.status(404).json({ message: "No test found with this ID" });
+    }
+
+    // Return the test data
     return res.status(200).json(testData);
   } catch (error) {
     console.log(error.message);
@@ -89,4 +108,4 @@ const deleteTest = async (req, res) => {
   }
 };
 
-export { getTest, createTest, updateTest, deleteTest };
+export { getAllTest, createTest, updateTest, deleteTest, getTestbyId };

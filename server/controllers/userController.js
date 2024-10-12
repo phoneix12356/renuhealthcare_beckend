@@ -35,20 +35,20 @@ const userRegistration = async (req, res) => {
       phone: phone,
       post: post,
       password: hashPassword,
-      course: course._id,
+      // course: course._id,
     });
 
     // Save the new user to the database
     const savedUser = await newUser.save();
 
     // Optionally, generate JWT token
-    const token = jwt.sign(
+    const token = await jwt.sign(
       { userID: savedUser._id },
       process.env.JWT_SECRET_KEY,
       { expiresIn: "5d" }
     );
     const userId = savedUser._id;
-    generateUserCertificate(name, email, userId, post);
+    // generateUserCertificate(name, email, userId, post);
     // console.log(courseController);
     // Send response with user data and token
     res.status(201).json({ status: "success", user: savedUser, token });
