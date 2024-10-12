@@ -35,7 +35,7 @@ const userRegistration = async (req, res) => {
       phone: phone,
       post: post,
       password: hashPassword,
-      // course: course._id,
+      course: course._id,
     });
 
     // Save the new user to the database
@@ -48,8 +48,8 @@ const userRegistration = async (req, res) => {
       { expiresIn: "5d" }
     );
     const userId = savedUser._id;
-    // generateUserCertificate(name, email, userId, post);
-    // console.log(courseController);
+    generateUserCertificate(name, email, userId, post);
+   
     // Send response with user data and token
     res.status(201).json({ status: "success", user: savedUser, token });
   } catch (error) {
@@ -161,6 +161,7 @@ const generateUserCertificate = (name, email, userId, post) => {
 };
 
 const download = async (req, res) => {
+  console.log("downloads", req.body);
   try {
     // Find the certificate in the database based on userId
     const userId = req.user._id;
@@ -206,8 +207,9 @@ const addCompletedModuleToUserDatabase = async (req, res) => {
 
     const courseDetails = await courseModel.findById(courseId);
 
-
-    if (updatedUser.completedModules.length >= courseDetails.modulesIds.length) {
+    if (
+      updatedUser.completedModules.length >= courseDetails.modulesIds.length
+    ) {
       console.log(updatedUser);
       const updatedUser1 = await userModal.findByIdAndUpdate(
         userId,

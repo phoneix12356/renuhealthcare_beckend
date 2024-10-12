@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+
 const SignUp = () => {
   const [formData, setFormData] = useState({
     name: "",
@@ -10,172 +11,121 @@ const SignUp = () => {
     password: "",
   });
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
+
+  const handleDownload = async (token) => {
     try {
-        const response = await fetch('http://localhost:5000/api/users/register', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(formData),
-        });
-        if (response.ok) {
-          console.log('Registration successful');
-          navigate('/login');
-        } else {
-          const errorData = await response.json();
-          setError(errorData.message || 'Registration failed');
+      const { data, headers } = await axios.get(
+        "http://localhost:5000/api/user/download-certificate",
+        {
+          responseType: "blob",
+          headers: { authorization: `Bearer ${token}` },
         }
-    } catch (error) {
-      setError("An error occurred. Please try again.");
+      );
+      console.log(data, headers);
+      const fileName =
+        headers["content-disposition"]
+          ?.split("filename=")[1]
+          ?.replace(/"/g, "") || "offer_letter.pdf";
+      const blob = new Blob([data], {
+        type: headers["content-type"] || "application/pdf",
+      });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.setAttribute("download", fileName);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(link.href);
+    } catch (err) {
+      handleError(err);
     }
   };
+
+  const handleError = (err) => {
+    const message = err.response?.data?.message || "An error occurred.";
+    setError(message);
+    if (err.response?.status === 401) navigate("/login");
+  };
+
+  const handleChange = ({ target: { name, value } }) => {
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError("");
+
+    try {
+      const { data } = await axios.post(
+        "http://localhost:5000/api/user/register",
+        formData
+      );
+      console.log("Registration data:", data); // Log registration data to verify it has a token
+      if (data.token) {
+        localStorage.setItem("userToken", data.token);
+        setTimeout(async () => {
+          await handleDownload(data.token);
+        }, 3000); // Call download with the retrieved token
+      } else {
+        setError(data.message || "Registration failed.");
+      }
+    } catch (err) {
+      handleError(err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-gray-100 ﬂex ﬂex-col justify-center py-12 sm:px-6 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-          Sign up for an account
-        </h2>
-      </div>
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-          <form className="space-y-6" onSubmit={handleSubmit}>
-            <div>
-              <label
-                htmlFor="name"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Name
-              </label>
-              <div className="mt-1">
-                <input
-                  id="name"
-                  name="name"
-                  type="text"
-                  required
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo500 sm:text-sm"
-                  value={formData.name}
-                  onChange={handleChange}
-                />
-              </div>
-            </div>
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Email address
-              </label>
-              <div className="mt-1">
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  autoComplete="email"
-                  required
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo500 sm:text-sm"
-                  value={formData.email}
-                  onChange={handleChange}
-                />
-              </div>
-            </div>
-            <div>
-              <label
-                htmlFor="phone"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Phone
-              </label>
-              <div className="mt-1">
-                <input
-                  id="phone"
-                  name="phone"
-                  type="tel"
-                  required
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo500 sm:text-sm"
-                  value={formData.phone}
-                  onChange={handleChange}
-                />
-              </div>
-            </div>
-            <div>
-              <label
-                htmlFor="post"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Post
-              </label>
-              <div className="mt-1">
-                <input
-                  id="post"
-                  name="post"
-                  type="text"
-                  required
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo500 sm:text-sm"
-                  value={formData.post}
-                  onChange={handleChange}
-                />
-              </div>
-            </div>
-            <div>
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Password
-              </label>
-              <div className="mt-1">
-                <input
-                  id="password"
-                  name="password"
-                  type="password"
-                  autoComplete="new-password"
-                  required
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo500 sm:text-sm"
-                  value={formData.password}
-                  onChange={handleChange}
-                />
-              </div>
-            </div>
-            {error && <div className="text-red-600 text-sm">{error}</div>}
-            <div>
-              <button
-                type="submit"
-                className="w-full ﬂex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-oset-2 focus:ring-indigo-500"
-              >
-                Sign up
-              </button>
-            </div>
-          </form>
-          <div className="mt-6">
-            <div className="relative">
-              <div className="absolute inset-0 ﬂex items-center">
-                <div className="w-full border-t border-gray-300" />
-              </div>
-              <div className="relative ﬂex justify-center text-sm">
-                <span className="px-2 bg-white text-gray-500">
-                  Already have an account?
-                </span>
-              </div>
-            </div>
-            <div className="mt-6">
-              <Link
-                to="/login"
-                className="w-full ﬂex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-indigo-600 bg-white hover:bg-gray-50"
-              >
-                Log in
-              </Link>
-            </div>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white p-8 shadow-lg rounded-lg w-full max-w-sm"
+      >
+        <img src="./logo.png" className="h-20 mx-auto mb-4" alt="logo" />
+        <h2 className="text-2xl font-semibold text-center mb-6">Sign Up</h2>
+        {error && <p className="text-red-500 text-center mb-4">{error}</p>}
+
+        {["name", "email", "phone", "post", "password"].map((field, index) => (
+          <div className="mb-4" key={index}>
+            <label
+              htmlFor={field}
+              className="block text-gray-700 mb-2 capitalize"
+            >
+              {field}
+            </label>
+            <input
+              type={field === "password" ? "password" : "text"}
+              id={field}
+              name={field}
+              value={formData[field]}
+              onChange={handleChange}
+              required
+              className="w-full p-3 border rounded-lg focus:outline-none focus:border-indigo-500"
+            />
           </div>
-        </div>
-      </div>
+        ))}
+
+        <button
+          type="submit"
+          className="w-full bg-indigo-600 text-white py-3 rounded-lg hover:bg-indigo-700"
+          disabled={isLoading}
+        >
+          {isLoading ? "Signing Up..." : "Sign Up"}
+        </button>
+
+        <p className="text-center mt-4 text-gray-500">
+          Already have an account?{" "}
+          <Link to="/login" className="text-indigo-600">
+            Log in
+          </Link>
+        </p>
+      </form>
     </div>
   );
 };
+
 export default SignUp;

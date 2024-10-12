@@ -3,6 +3,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
+
 gsap.registerPlugin(ScrollTrigger);
 
 const ContactUs = () => {
@@ -36,12 +37,11 @@ const ContactUs = () => {
     <>
       <div className="sm:w-11/12 m-auto">
         <ToastContainer />
-
         {/* Hero Section */}
         <div
           className="relative mb-4 h-52 sm:h-96 md:h-[40rem] flex items-center justify-center w-full bg-cover rounded-lg bg-center bg-no-repeat"
           style={{
-            backgroundImage: `url("/Contact/contact-hero-1.jpg")`,
+            backgroundImage: 'url("/Contact/contact-hero-1.jpg")',
           }}
         >
           <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black opacity-50"></div>
@@ -57,7 +57,10 @@ const ContactUs = () => {
             <h2 className="mb-6 text-3xl font-bold text-center text-gray-800">
               Have any questions? We're here to help!
             </h2>
-            <form onSubmit={onSubmit} className="bg-white p-6 rounded-lg shadow-lg border border-gray-200">
+            <form
+              onSubmit={onSubmit}
+              className="bg-white p-6 rounded-lg shadow-lg border border-gray-200"
+            >
               <input
                 name="name"
                 className="mb-4 w-full py-3 px-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300"
@@ -72,61 +75,52 @@ const ContactUs = () => {
                 placeholder="Your Email"
                 required
               />
-              <input
-                name="subject"
-                className="mb-4 w-full py-3 px-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300"
-                type="text"
-                placeholder="Subject"
-                required
-              />
               <textarea
                 name="message"
-                className="mb-4 w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300"
-                placeholder="Message"
+                className="mb-4 w-full py-3 px-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300"
+                rows="5"
+                placeholder="Your Message"
                 required
-                rows="4"
               ></textarea>
-              <div className="flex justify-center">
-                <button
-                  type="submit"
-                  className="w-full rounded-lg p-3 font-semibold text-xl bg-green-500 text-white shadow-md hover:bg-orange-600 hover:scale-105 transition-transform duration-300"
-                >
-                  Send Message
-                </button>
-              </div>
+              <button
+                type="submit"
+                className="w-full py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-300"
+              >
+                Send Message
+              </button>
             </form>
           </div>
 
-          {/* Location */}
-          <div className="contact-location md:w-1/2 md:px-4 flex justify-center">
-            <a
-              target="_blank"
-              rel="noreferrer"
-              href="https://www.google.com/maps/search/1+branch---479,+(Baspadamka,+Tehsil+Pataudi,+Gurugram,+Haryana+-+122503,+India/@28.3379119,76.7788465,15z/data=!3m1!4b1?entry=ttu"
-            >
-              <img
-                src="/Contact/contact-location.png"
-                className="rounded-lg border border-gray-300 shadow-lg hover:shadow-2xl transition-shadow duration-300"
-                alt="contact location"
-              />
-            </a>
+          {/* Location Section */}
+          <div className="contact-location md:w-1/2 md:px-4 mt-8 md:mt-0">
+            <h2 className="mb-6 text-3xl font-bold text-center text-gray-800">
+              Our Location
+            </h2>
+            <div className="flex flex-col items-center justify-center p-6 bg-white rounded-lg shadow-lg border border-gray-200">
+              <h3 className="text-xl font-semibold">Our Office</h3>
+              <p className="text-gray-600">
+                1234 Street Name,
+                <br />
+                City, State, 12345
+              </p>
+              <p className="text-gray-600">Phone: (123) 456-7890</p>
+              <p className="text-gray-600">Email: info@example.com</p>
+              <div className="mt-4">
+                <a
+                  href="https://www.google.com/maps"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 underline"
+                >
+                  View on Google Maps
+                </a>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </>
   );
 };
-
-// GSAP functionalities
-gsap.to(".contact-hero h1", {
-  y: -100,
-  duration: 1,
-  opacity: 0,
-  scrollTrigger: {
-    trigger: ".contact-section",
-    scroller: "body",
-    scrub: 1,
-  },
-});
 
 export default ContactUs;

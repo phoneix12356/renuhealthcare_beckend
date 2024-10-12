@@ -11,9 +11,8 @@ function Header() {
       className="bg-body-tertiary  px-1  border sm:mb-1 sm:ml-1 sm:mr-1 rounded-t-lg sm:rounded-none h-1/10 sm:w-11/12 m-auto"
     >
       <Container>
-        <Navbar.Brand href="#home">
-          {/* logo container */}
-          <Link href="/Home/Home">
+        <Navbar.Brand>
+          <Link to="/Home/Home">
             <img
               src="./logo.png"
               className="bg-white rounded-lg h-12 w-12"
@@ -21,6 +20,7 @@ function Header() {
             />
           </Link>
         </Navbar.Brand>
+
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           {/* Navigate buttons */}

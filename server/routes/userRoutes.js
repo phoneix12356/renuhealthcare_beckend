@@ -8,7 +8,7 @@ import {
   download,
   addCompletedModuleToUserDatabase,
   addCompletedTestToUserDatabase,
-  addFullWatchedToUserDatabase
+  addFullWatchedToUserDatabase,
 } from "../controllers/userController.js";
 import checkUserAuth from "../middlewares/auth-middleware.js";
 const userRouter = express.Router();
