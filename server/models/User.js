@@ -11,7 +11,9 @@ const userSchema = new mongoose.Schema({
   completedTests: [{ type: mongoose.Schema.Types.ObjectId, ref: "Test" }],
   completedVideos: [{ type: mongoose.Schema.Types.ObjectId, ref: "Video" }],
   completedCourses: [{ type: mongoose.Schema.Types.ObjectId, ref: "Course" }],
+  videoComplate : {type: String, default : 0},
 }, {timestamps: true});
+  
 
 const UserModel = mongoose.model("User", userSchema);
 export default UserModel;
