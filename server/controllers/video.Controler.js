@@ -1,5 +1,6 @@
 import videoModels from "../models/video.model.js"
-import { getVideoDurationInSeconds } from 'get-video-duration';
+import express from 'express';
+const app = express();
 
 export const getVideoById = async (req, res) => {
   try {
@@ -32,7 +33,7 @@ export const videoUpload = async (req, res) => {
 
     let videoLength;
     try {
-      videoLength = await getVideoDurationInSeconds(videoUrl);
+      // videoLength = await getVideoDurationInSeconds(videoUrl);
     } catch (durationError) {
       console.error("Error getting video duration:", durationError);
       return res.status(400).send({ message: "Unable to get video duration" });
@@ -90,3 +91,4 @@ export const deleteVideos = async (req, res) => {
     res.status(400).send({ message: err.message });
   }
 }
+

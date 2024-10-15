@@ -34,7 +34,6 @@ userRouter.put(
 );
 userRouter.put(
   "/add-completed-video",
-  checkUserAuth,
   addFullWatchedToUserDatabase
 );
 // Protected Routes

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import gsap from "gsap";
@@ -7,6 +7,7 @@ import ScrollTrigger from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
 
 const ContactUs = () => {
+ 
   const onSubmit = async (event) => {
     event.preventDefault();
     const formData = new FormData(event.target);
@@ -32,7 +33,6 @@ const ContactUs = () => {
     }
     event.target.reset();
   };
-
   return (
     <>
       <div className="sm:w-11/12 m-auto">

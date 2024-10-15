@@ -277,7 +277,7 @@ const addCompletedTestToUserDatabase = async (req, res) => {
 };
 const addFullWatchedToUserDatabase = async (req, res) => {
   try {
-    const userId = req.user._id;
+    const userId = req.body.user_id;
     const watchedVideoId = req.body.videoId;
 
     // change user video complate update here

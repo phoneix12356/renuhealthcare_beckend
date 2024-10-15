@@ -11,7 +11,7 @@ const userSchema = new mongoose.Schema({
   completedTests: [{ type: mongoose.Schema.Types.ObjectId, ref: "Test" }],
   completedVideos: [{ type: mongoose.Schema.Types.ObjectId, ref: "Video" }],
   completedCourses: [{ type: mongoose.Schema.Types.ObjectId, ref: "Course" }],
-  videoComplate : {type: String, default : 0},
+  videoComplate : {type: Number, default : 0},
 }, {timestamps: true});
   
 
