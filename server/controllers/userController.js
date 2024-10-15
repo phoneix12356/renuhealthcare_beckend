@@ -251,7 +251,7 @@ const addCompletedTestToUserDatabase = async (req, res) => {
     // Find the user and update the completedModules array
     const updatedUser = await userModal.findByIdAndUpdate(
       userId,
-      { $addToSet: { completedTest: completedModuleId } },
+      { $addToSet: { completedTest: completedTestId } },
       { new: true, runValidators: true }
     );
 

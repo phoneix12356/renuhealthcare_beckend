@@ -12,51 +12,63 @@ import Login from "./Components/Login/Login";
 import Home from "./Components/Home/Home";
 import Signup from "./Components/Login/Signup";
 import Error from "./Components/Error/Error";
+import Course from "./Components/Course/Course";
+import { UserProvider } from "./Context/UserContext"; // Use UserProvider instead of UserContext
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 const router = createBrowserRouter([
   {
-    
-    path : "/",
-    element:<App/>,
-    children : [
+    path: "/",
+    element: <App />,
+    children: [
       {
-        path:"",
-        element:<Home/>
+        path: "",
+        element: <Home />,
       },
       {
-        path:"About",
-        element:<About/>
+        path: "About",
+        element: <About />,
       },
       {
-        path:"Donate",
-        element:<Donate/>
-      },{
-        path:"Gallery",
-        element:<Gallery/>
-      },{
-        path:"Events",
-        element:<Events/>
-      },{
-        path:"Contact",
-        element:<Contact/>
-      },{
-        path:"Login",
-        element:<Login/>
+        path: "Donate",
+        element: <Donate />,
       },
       {
-        path:"Signup",
-        element:<Signup/>
-      },{
-        path:"*",
-        element:<Error/>
-      }
-    ]
-  }
-])
+        path: "Gallery",
+        element: <Gallery />,
+      },
+      {
+        path: "Events",
+        element: <Events />,
+      },
+      {
+        path: "Contact",
+        element: <Contact />,
+      },
+      {
+        path: "Login",
+        element: <Login />,
+      },
+      {
+        path: "Signup",
+        element: <Signup />,
+      },
+      {
+        path: "Course",
+        element: <Course />,
+      },
+      {
+        path: "*",
+        element: <Error />,
+      },
+    ],
+  },
+]);
 
 root.render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <UserProvider> {/* Wrap with UserProvider */}
+      <RouterProvider router={router} />
+    </UserProvider>
   </React.StrictMode>
 );

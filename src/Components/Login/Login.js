@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { UserContext } from "../../Context/UserContext";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -8,6 +9,9 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+
+  // Destructure the user and setUser from the context
+  const {user, setUser } = useContext(UserContext);
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
@@ -17,13 +21,18 @@ const Login = () => {
         "http://localhost:5000/api/user/login",
         { email, password }
       );
-      console.log(response);
+
+      if (response.data.user) {
+        setUser(response.data.user); // Use setUser from the context
+        console.log(user)
+
         if (response.data.token) {
-          localStorage.setItem('userToken', response.data.token);
-          navigate('/');
-        } else {
-          setError(response.data.message || 'Login failed. Please try again.');
+          localStorage.setItem("userToken", response.data.token);
+          navigate("/Course"); // Redirect on successful login
         }
+      } else {
+        setError(response.data.message || "Login failed. Please try again.");
+      }
     } catch (error) {
       setError(
         error.response?.data?.message || "An error occurred. Please try again."
@@ -78,7 +87,7 @@ const Login = () => {
 
         <button
           type="submit"
-          className="w-full bg-indigo-600 text-white py-3 rounded-lg hover:bg-indigo-700"
+          className="w-full bg-indigo-600 text-white py-3 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50"
         >
           Login
         </button>

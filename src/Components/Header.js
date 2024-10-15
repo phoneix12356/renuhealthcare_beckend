@@ -61,10 +61,23 @@ function Header() {
             >
               Contact
             </NavLink>
-            <NavLink to="/Login">
-              <button className="bg-gradient-to-r from-transparent to-transparent hover:underline hover:underline-offset-1 hover:from-pink-500 hover:to-yellow-500 rounded-lg px-3">
-                Login
-              </button>
+            <NavLink
+              to="/Login"
+              className="hover:underline hover:underline-offset-1"
+            >
+              Login
+            </NavLink>
+            <NavLink
+              to="/Signup"
+              className="hover:underline hover:underline-offset-1"
+            >
+              Signup
+            </NavLink>
+            <NavLink
+              to="/Course"
+              className="hover:underline hover:underline-offset-1"
+            >
+              Course
             </NavLink>
           </Nav>
         </Navbar.Collapse>

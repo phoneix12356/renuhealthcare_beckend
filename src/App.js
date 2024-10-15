@@ -3,6 +3,7 @@ import Footer from "./Components/Footer";
 import Loading from "./Components/Loading/Loading";
 import { useState, useEffect } from "react";
 import { Outlet } from "react-router-dom";
+import UserContext from "./Context/UserContext.js";
 function App() {
   const [isLoading, setIsLoading] = useState(true);
 

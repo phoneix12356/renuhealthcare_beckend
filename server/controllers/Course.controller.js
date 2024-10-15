@@ -44,17 +44,14 @@ const courseController = {
 
   // Get a course by ID
   async getCourseById(req, res) {
-    console.log(req.params);
     try {
       const course = await Course.findById(req.params.id);
       if (!course) return res.status(404).json({ message: "Course not found" });
-      res.status(200).json(course);
+      return res.status(200).json(course);
     } catch (err) {
-      res.status(400).json({ message: err.message });
+      return res.status(400).json({ message: err.message });
     }
   },
-
-  
 
   // Update a course by ID
   async updateCourse(req, res) {
@@ -63,9 +60,9 @@ const courseController = {
         new: true,
       });
       if (!course) return res.status(404).json({ message: "Course not found" });
-      res.status(200).json(course);
+      return res.status(200).json(course);
     } catch (err) {
-      res.status(400).json({ message: err.message });
+      return res.status(400).json({ message: err.message });
     }
   },
 
@@ -74,9 +71,9 @@ const courseController = {
     try {
       const course = await Course.findByIdAndDelete(req.params.id);
       if (!course) return res.status(404).json({ message: "Course not found" });
-      res.status(200).json({ message: "Course deleted successfully" });
+      return res.status(200).json({ message: "Course deleted successfully" });
     } catch (err) {
-      res.status(400).json({ message: err.message });
+      return res.status(400).json({ message: err.message });
     }
   },
 
@@ -94,9 +91,9 @@ const courseController = {
       user.completeCourse.push(courseId);
       await user.save();
       await course.save();
-      res.status(200).json({ message: "Course completed", course });
+      return res.status(200).json({ message: "Course completed", course });
     } catch (err) {
-      res.status(400).json({ message: err.message });
+      return res.status(400).json({ message: err.message });
     }
   },
 
@@ -120,9 +117,11 @@ const courseController = {
       // Add the test to the course
       course.module.push(moduleId);
       await course.save();
-      res.status(200).json({ message: "Module added to course", course });
+      return res
+        .status(200)
+        .json({ message: "Module added to course", course });
     } catch (err) {
-      res.status(400).json({ message: err.message });
+      return res.status(400).json({ message: err.message });
     }
   },
 };

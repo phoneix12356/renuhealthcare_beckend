@@ -2,7 +2,9 @@ import moduleModel from "../models/module.model.js";
 import TestModel from "../models/Test.model.js";
 import videoModels from "../models/video.model.js";
 
-// Get module by ID (Optimized)
+
+
+// Get module by ID and populate questions
 export const getModulesById = async (req, res) => {
   try {
     const { id } = req.params;
@@ -11,10 +13,17 @@ export const getModulesById = async (req, res) => {
       return res.status(400).json({ message: "Module ID is required" });
     }
 
+    // Find module by ID and populate videoId and test
     const module = await moduleModel
       .findById(id)
-      .populate("videoId")
-      .populate("test");
+      .populate("videoId")  // Populate related videos
+      .populate({
+        path: "test",
+        populate: {
+          path: "questions",  // Populate the questions inside the test
+          select: "questionText options"  // Select question fields to populate
+        }
+      });
 
     if (!module) {
       return res.status(404).json({ message: "Module not found" });
@@ -22,7 +31,6 @@ export const getModulesById = async (req, res) => {
 
     res.status(200).json(module);
   } catch (err) {
-    console.error(err.message);
     res.status(500).json({ error: "Server error" });
   }
 };
@@ -61,7 +69,6 @@ export const addModule = async (req, res) => {
 
     res.status(201).json(newModule);
   } catch (err) {
-    console.error(err.message);
     res.status(500).json({ error: "Server error" });
   }
 };
@@ -85,7 +92,6 @@ export const deleteModule = async (req, res) => {
       .status(200)
       .json({ message: "Module deleted successfully", deletedModule });
   } catch (err) {
-    console.error(err.message);
     res.status(500).json({ error: "Server error" });
   }
 };
@@ -121,7 +127,6 @@ export const updateModule = async (req, res) => {
       .status(200)
       .json({ message: "Module updated successfully", updatedModule });
   } catch (err) {
-    console.error(err.message);
     res.status(500).json({ error: "Server error" });
   }
 };

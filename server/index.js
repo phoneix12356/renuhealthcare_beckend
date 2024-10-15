@@ -8,10 +8,7 @@ dotenv.config();
 
 const app = express();
 
-app.use((req, res, next) => {
-  console.log("new request", req.body);
-  next();
-});
+
 
 connectDb()
   .then(() => {

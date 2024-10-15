@@ -1,12 +1,12 @@
 import express from "express";
 
-import {
-    getAnswers
-} from "../controllers/score.controller.js";
+import { postAnswers,getScore } from "../controllers/score.controller.js";
+import checkUserAuth from "../middlewares/auth-middleware.js";
 
 const router = express.Router();
 
-router.get("/calculate-score", getAnswers);
+router.post("/calculate-score", checkUserAuth, postAnswers);
+router.get("/", checkUserAuth, getScore);
 
 
 export default router;
