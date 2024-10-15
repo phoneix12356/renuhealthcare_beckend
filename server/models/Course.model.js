@@ -14,7 +14,7 @@ const courseSchema = new Schema(
     isCompleted: { type: Boolean, default: false },
     deadline: {
       type: Number,
-      default: 40,
+      default: 30,
       required: true,
       min: 1, 
     },

@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import generateCertificate from "../Util/pdfGenerator.js";
 import Certificate from "../models/Certificate.js";
 import courseModel from "../models/Course.model.js";
+import userModel from "../models/User.js"
 // register new user...
 const userRegistration = async (req, res) => {
   const { name, email, phone, post, password } = req.body;
@@ -279,6 +280,15 @@ const addFullWatchedToUserDatabase = async (req, res) => {
     const userId = req.user._id;
     const watchedVideoId = req.body.videoId;
 
+    // change user video complate update here
+    const userGet = await userModal.findById(userId);
+    const updateData = {
+      videoComplate : userGet.videoComplate + 1
+    }
+    if(userId){
+      const result = await userModel.findByIdAndUpdate(userId, updateData);
+      return res.send(result)
+    }
     // Check if the module ID is provided
     if (!watchedVideoId) {
       return res.status(400).json({ message: "watchedVideoId ID is required" });

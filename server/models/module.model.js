@@ -7,7 +7,7 @@ const moduleSchema = new Schema(
     videoId: [{ type: Schema.Types.ObjectId, ref: "Video" }], // Refers to videos
     test: { type: Schema.Types.ObjectId, ref: "Test" }, // Refers to test
     isCompleted: { type: Boolean, default: false },
-    deadline: { type: Number, default: 30, required: true, min: 1 }, // Positive deadline validation
+    deadline: { type: Number, default: 3, required: true, min: 1 }, // Positive deadline validation
   },
   { timestamps: true }
 );

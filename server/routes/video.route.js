@@ -1,5 +1,5 @@
 import express from "express";
-import * as videoRoutes from "../controllers/video.Controler.js";
+import * as videoRoutes from '../controllers/video.Controler.js'
 
 const videoRouter = express.Router();
 

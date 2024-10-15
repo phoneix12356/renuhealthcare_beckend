@@ -1,20 +1,25 @@
-import videoModels from "../models/video.model.js";
+import videoModels from "../models/video.model.js"
+import { getVideoDurationInSeconds } from 'get-video-duration';
 
 export const getVideoById = async (req, res) => {
   try {
-    const { vid } = req.params; // Consistent naming
+    const { vid } = req.params;
     const getVideo = await videoModels.findById(vid);
+    if (!getVideo) {
+      return res.status(404).send({ message: "Video not found" });
+    }
     res.status(200).send({ message: "success", getVideo });
   } catch (err) {
-    res.status(400).send({ message: err.message }); // Sending a message object
+    res.status(400).send({ message: err.message });
   }
 };
+
 export const getAllVideo = async (req, res) => {
   try {
     const getVideo = await videoModels.find({});
     res.status(200).send({ message: "success", getVideo });
   } catch (err) {
-    res.status(400).send({ message: err.message }); // Sending a message object
+    res.status(400).send({ message: err.message });
   }
 };
 
@@ -22,32 +27,52 @@ export const videoUpload = async (req, res) => {
   console.log("video Post");
   try {
     console.log(req.body);
-    const createVideohist = new videoModels(req.body);
-    const result = await createVideohist.save(); // Await the save operation
+    
+    const { videoUrl } = req.body;
+
+    let videoLength;
+    try {
+      videoLength = await getVideoDurationInSeconds(videoUrl);
+    } catch (durationError) {
+      console.error("Error getting video duration:", durationError);
+      return res.status(400).send({ message: "Unable to get video duration" });
+    }
+
+    const createVideohist = new videoModels({
+      ...req.body,
+      videoLength,
+    });
+
+    const result = await createVideohist.save();
     res.status(200).send(result);
   } catch (err) {
-    res.status(400).send({ message: err.message }); // Sending a message object
+    res.status(400).send({ message: err.message });
   }
 };
 
 export const updateContentWatchTime = async (req, res) => {
   try {
-    const { videoId, content, isComplete } = req.body; // Consistent naming
-    const watchTimeManage = await videoModels.findById(videoId); // Use findById instead of find
-    if (!watchTimeManage) {
+    const { videoId, content, isComplete } = req.body;
+    const video = await videoModels.findById(videoId);
+    if (!video) {
       return res.status(404).send({ message: "Video not found" });
     }
-    let setTime = (watchTimeManage.watchTime || 0) + 1; // Ensure watchTime exists
-    const others = {
+    
+    let newWatchTime = (video.watchTime || 0) + 1;
+    
+    const updateData = {
+      watchTime: newWatchTime,
       content,
       isCompleted: isComplete,
     };
-    const updateWtime = await videoModels.findByIdAndUpdate(
+
+    const updatedVideo = await videoModels.findByIdAndUpdate(
       videoId,
-      { watchTime: setTime, ...others },
+      updateData,
       { new: true }
     );
-    res.status(200).send(updateWtime);
+    
+    res.status(200).send(updatedVideo);
   } catch (err) {
     res.status(400).send({ message: err.message });
   }
@@ -55,7 +80,7 @@ export const updateContentWatchTime = async (req, res) => {
 
 export const deleteVideos = async (req, res) => {
   try {
-    const { videoId } = req.body; // Consistent naming
+    const { videoId } = req.body;
     const deleteVideo = await videoModels.findByIdAndDelete(videoId);
     if (!deleteVideo) {
       return res.status(404).send({ message: "Video not found" });
@@ -64,4 +89,4 @@ export const deleteVideos = async (req, res) => {
   } catch (err) {
     res.status(400).send({ message: err.message });
   }
-};
+}
