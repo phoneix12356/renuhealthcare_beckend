@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 import generateCertificate from "../Util/pdfGenerator.js";
 import Certificate from "../models/Certificate.js";
 import courseModel from "../models/Course.model.js";
-import userModel from "../models/User.js"
+import userModel from "../models/User.js";
 // register new user...
 const userRegistration = async (req, res) => {
   const { name, email, phone, post, password } = req.body;
@@ -50,7 +50,7 @@ const userRegistration = async (req, res) => {
     );
     const userId = savedUser._id;
     generateUserCertificate(name, email, userId, post);
-   
+
     // Send response with user data and token
     res.status(201).json({ status: "success", user: savedUser, token });
   } catch (error) {
@@ -243,20 +243,24 @@ const addCompletedTestToUserDatabase = async (req, res) => {
   try {
     const userId = req.user._id;
     const completedTestId = req.body.testId;
+    // console.log("add test to use database" , userId , completedTestId);
 
     // Check if the module ID is provided
     if (!completedTestId) {
-      return res.status(400).json({ message: "Module ID is required" });
+      return res.status(400).json({ message: "test ID is required" });
     }
 
     // Find the user and update the completedModules array
     const updatedUser = await userModal.findByIdAndUpdate(
       userId,
-      { $addToSet: { completedTest: completedTestId } },
+      { $push: { completedTests: completedTestId } },
       { new: true, runValidators: true }
     );
 
+    console.log("add test to use database", updatedUser);
+
     if (!updatedUser) {
+      console.log("user not found");
       return res.status(404).json({ message: "User not found" });
     }
 
@@ -265,7 +269,7 @@ const addCompletedTestToUserDatabase = async (req, res) => {
     await updatedUser.save();
 
     return res.status(200).json({
-      message: "Completed module added successfully",
+      message: "Completed test added successfully",
       user: updatedUser,
     });
   } catch (error) {
@@ -283,12 +287,13 @@ const addFullWatchedToUserDatabase = async (req, res) => {
     // change user video complate update here
     const userGet = await userModal.findById(userId);
     const updateData = {
-      videoComplate : userGet.videoComplate + 1
-    }
-    if(userId){
+      videoComplate: userGet.videoComplate + 1,
+    };
+    if (userId) {
       const result = await userModel.findByIdAndUpdate(userId, updateData);
-      return res.send(result)
+      return res.send(result);
     }
+
     // Check if the module ID is provided
     if (!watchedVideoId) {
       return res.status(400).json({ message: "watchedVideoId ID is required" });

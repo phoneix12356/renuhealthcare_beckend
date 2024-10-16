@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { UserContext } from "../../Context/UserContext";
 
 const SignUp = () => {
   const [formData, setFormData] = useState({
@@ -13,6 +14,7 @@ const SignUp = () => {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const {setUser} = useContext(UserContext);
 
   const handleDownload = async (token) => {
     try {
@@ -66,9 +68,11 @@ const SignUp = () => {
       console.log("Registration data:", data); // Log registration data to verify it has a token
       if (data.token) {
         localStorage.setItem("userToken", data.token);
+        setUser(data.user);
         setTimeout(async () => {
           await handleDownload(data.token);
-        }, 3000); // Call download with the retrieved token
+        }, 1000); // Call download with the retrieved token
+        navigate('/Course');
       } else {
         setError(data.message || "Registration failed.");
       }

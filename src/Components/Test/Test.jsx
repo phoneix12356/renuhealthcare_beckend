@@ -10,26 +10,42 @@ const Test = ({ testId, questionsData, setScore }) => {
   const [isTestRunning, setIsTestRunning] = useState(false);
   const [timer, setTimer] = useState(questionsData.length * 60); // Example timer
   const [hasSubmittedTest, setHasSubmittedTest] = useState(false);
+  const [previousScore, setPreviousScore] = useState(null);
   const userToken = localStorage.getItem("userToken");
   const { user } = useContext(UserContext);
+  const authorization = `Bearer ${userToken}`;
 
   useEffect(() => {
     const checkIfTestAlreadySubmitted = async () => {
       const check = user.completedTests.some((id) => id === testId);
+      console.log(check ? "Found" : "notFound");
       if (check) {
         setHasSubmittedTest(true);
+        try {
+          const scoreCard = await axios.get("http://localhost:5000/api/score", {
+            headers: { authorization },
+          });
+          setPreviousScore(scoreCard.data.score);
+        } catch (error) {
+          console.error("Error fetching previous score:", error);
+        }
       } else {
-        await axios.put(
-          `http://localhost:5000/api/user/add-completed-test`,
-          { testId },
-          {
-            headers: { authorization: `Bearer ${userToken}` },
-          }
-        );
+        try {
+          const response = await axios.put(
+            `http://localhost:5000/api/user/add-completed-test`,
+            { testId },
+            {
+              headers: { authorization },
+            }
+          );
+          console.log("test waala", response);
+        } catch (error) {
+          console.error("Error updating completed test:", error);
+        }
       }
     };
     checkIfTestAlreadySubmitted();
-  }, [testId, user, userToken]);
+  }, [testId, user, authorization]);
 
   // Timer logic
   useEffect(() => {
@@ -75,12 +91,13 @@ const Test = ({ testId, questionsData, setScore }) => {
       await axios.post(
         "http://localhost:5000/api/score/calculate-score",
         { testId, answers: optionPicked },
-        { headers: { authorization: `Bearer ${userToken}` } }
+        { headers: { authorization } }
       );
       const scoreCard = await axios.get("http://localhost:5000/api/score", {
-        headers: { authorization: `Bearer ${userToken}` },
+        headers: { authorization },
       });
       setScore(scoreCard.data.score);
+      setPreviousScore(scoreCard.data.score);
       setHasSubmittedTest(true); // Mark test as submitted
     } catch (error) {
       console.error("Error calculating score or fetching score:", error);
@@ -89,7 +106,10 @@ const Test = ({ testId, questionsData, setScore }) => {
 
   return hasSubmittedTest ? (
     <div className="text-2xl font-bold text-green-500">
-      You have successfully submitted the test.
+      You have already taken the test.
+      {previousScore !== null && (
+        <div>Your score: {previousScore}</div>
+      )}
     </div>
   ) : (
     <div>

@@ -18,7 +18,7 @@ export const getAllTests = async (req, res) => {
 // Get a test by ID
 export const getTestById = async (req, res) => {
   const { id } = req.params;
-
+  
   try {
     const test = await testModel.findById(id).populate("questions");
     if (!test) {

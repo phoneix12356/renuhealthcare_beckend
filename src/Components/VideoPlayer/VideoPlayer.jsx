@@ -1,6 +1,5 @@
-import React from 'react';
-import ReactPlayer from 'react-player';
-
+import React from "react";
+import ReactPlayer from "react-player";
 const VideoPlayer = ({ videoUrl, onVideoEnd, playerRef }) => {
   return (
     <ReactPlayer
@@ -8,11 +7,8 @@ const VideoPlayer = ({ videoUrl, onVideoEnd, playerRef }) => {
       url={videoUrl}
       controls={true}
       onEnded={onVideoEnd}
-      config={{
-        youtube: { playerVars: { rel: 0 } },
-      }}
+      config={{ youtube: { playerVars: { rel: 0 } } }}
     />
   );
 };
-
 export default VideoPlayer;
