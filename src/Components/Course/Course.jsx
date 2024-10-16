@@ -15,8 +15,9 @@ const Course = () => {
   const [score, setScore] = useState(null);
   const playerRef = useRef(null);
   const userToken = localStorage.getItem("userToken");
-  const { user, setUser } = useContext(UserContext);
+  const { user } = useContext(UserContext);
   const [refLinks, setRefLinks] = useState([]);
+  const [totalModules,setTotalModules] = useState([]);
 
   useEffect(() => {
     const fetchCourse = async () => {
@@ -73,6 +74,7 @@ const Course = () => {
 
   return (
     <div className="container mx-auto p-4 md:p-6 lg:p-8">
+      
       <VideoPlayer
         videoUrl={videoUrl}
         onVideoEnd={handleVideoEnd}

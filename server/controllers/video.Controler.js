@@ -23,10 +23,13 @@ export const getAllVideo = async (req, res) => {
 };
 
 export const videoUpload = async (req, res) => {
+  console.log("video Post");
   try {
     const createVideohist = new videoModels(req.body);
     const result = await createVideohist.save();
-    res.status(201).send({ message: "Video uploaded successfully", video: result });
+    res
+      .status(201)
+      .send({ message: "Video uploaded successfully", video: result });
   } catch (err) {
     res.status(400).send({ message: err.message });
   }

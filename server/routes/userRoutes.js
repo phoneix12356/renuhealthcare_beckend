@@ -8,7 +8,8 @@ import {
   download,
   addCompletedModuleToUserDatabase,
   addCompletedTestToUserDatabase,
-  addFullWatchedToUserDatabase,
+  addFullWatchedVideosToUserDatabase,
+  getSingleUser,
 } from "../controllers/userController.js";
 import checkUserAuth from "../middlewares/auth-middleware.js";
 const userRouter = express.Router();
@@ -21,6 +22,7 @@ userRouter.post("/register", userRegistration);
 userRouter.post("/login", userLogin);
 userRouter.post("/send-reset-password", sendEmailResetPassword);
 userRouter.post("/reset/password/:id/:token", userPasswordReset);
+userRouter.get("/getUser/:id", getSingleUser);
 userRouter.get("/download-certificate", checkUserAuth, download);
 userRouter.put(
   "/add-completed-module",
@@ -32,11 +34,7 @@ userRouter.put(
   checkUserAuth,
   addCompletedTestToUserDatabase
 );
-userRouter.put(
-  "/add-completed-video",
-  checkUserAuth,
-  addFullWatchedToUserDatabase
-);
+userRouter.put("/add-completed-video", addFullWatchedVideosToUserDatabase);
 // Protected Routes
 userRouter.post("/changepassword", changeUserPassword);
 

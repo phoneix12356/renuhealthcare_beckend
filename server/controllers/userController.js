@@ -243,9 +243,7 @@ const addCompletedTestToUserDatabase = async (req, res) => {
   try {
     const userId = req.user._id;
     const completedTestId = req.body.testId;
-    // console.log("add test to use database" , userId , completedTestId);
-
-    // Check if the module ID is provided
+  
     if (!completedTestId) {
       return res.status(400).json({ message: "test ID is required" });
     }
@@ -253,7 +251,7 @@ const addCompletedTestToUserDatabase = async (req, res) => {
     // Find the user and update the completedModules array
     const updatedUser = await userModal.findByIdAndUpdate(
       userId,
-      { $push: { completedTests: completedTestId } },
+      { $addToSet: { completedTests: completedTestId } },
       { new: true, runValidators: true }
     );
 
@@ -279,53 +277,55 @@ const addCompletedTestToUserDatabase = async (req, res) => {
       .json({ message: "Internal server error", error: error.message });
   }
 };
-const addFullWatchedToUserDatabase = async (req, res) => {
+const addFullWatchedVideosToUserDatabase = async (req, res) => {
   try {
     const userId = req.user._id;
     const watchedVideoId = req.body.videoId;
 
-    // change user video complate update here
-    const userGet = await userModal.findById(userId);
-    const updateData = {
-      videoComplate: userGet.videoComplate + 1,
-    };
-    if (userId) {
-      const result = await userModel.findByIdAndUpdate(userId, updateData);
-      return res.send(result);
-    }
-
-    // Check if the module ID is provided
+    // Check if video ID is provided
     if (!watchedVideoId) {
-      return res.status(400).json({ message: "watchedVideoId ID is required" });
+      return res.status(400).json({ message: "Video ID is required" });
     }
 
-    // Find the user and update the completedModules array
-    const updatedUser = await userModal.findByIdAndUpdate(
-      userId,
-      { $addToSet: { completedVideo: watchedVideoId } },
-      { new: true, runValidators: true }
-    );
-
-    if (!updatedUser) {
+    // Find the user
+    const user = await userModel.findById(userId);
+    if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Update the updatedAt field
-    updatedUser.updatedAt = new Date();
-    await updatedUser.save();
+    // Update videoComplete count and add watchedVideoId to completedVideo array
+    const updatedUser = await userModel.findByIdAndUpdate(
+      userId,
+      {
+        $addToSet: { completedVideo: watchedVideoId },
+        $inc: { videoComplete: 1 }, // Increment video completion count
+        updatedAt: new Date(), // Automatically update the timestamp
+      },
+      { new: true, runValidators: true }
+    );
 
     return res.status(200).json({
-      message: "Completed module added successfully",
+      message: "Completed video added successfully",
       user: updatedUser,
     });
   } catch (error) {
-    console.error("Error adding completed module:", error);
-    return res
-      .status(500)
-      .json({ message: "Internal server error", error: error.message });
+    console.error("Error adding completed video:", error);
+    return res.status(500).json({
+      message: "Internal server error",
+      error: error.message,
+    });
   }
 };
 
+const getSingleUser = async (req, res) => {
+  const ids = req.params.id;
+  try {
+    const result = await userModal.findById(ids);
+    res.send(result);
+  } catch (err) {
+    res.send(err.message);
+  }
+};
 export {
   userRegistration,
   userLogin,
@@ -335,5 +335,6 @@ export {
   download,
   addCompletedModuleToUserDatabase,
   addCompletedTestToUserDatabase,
-  addFullWatchedToUserDatabase,
+  addFullWatchedVideosToUserDatabase,
+  getSingleUser
 };
