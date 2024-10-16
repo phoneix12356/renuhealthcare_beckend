@@ -9,6 +9,7 @@ import {
   addCompletedModuleToUserDatabase,
   addCompletedTestToUserDatabase,
   addFullWatchedToUserDatabase,
+  getSingalUsers,
 } from "../controllers/userController.js";
 import checkUserAuth from "../middlewares/auth-middleware.js";
 const userRouter = express.Router();
@@ -21,6 +22,7 @@ userRouter.post("/register", userRegistration);
 userRouter.post("/login", userLogin);
 userRouter.post("/send-reset-password", sendEmailResetPassword);
 userRouter.post("/reset/password/:id/:token", userPasswordReset);
+userRouter.get('/getUser/:id', getSingalUsers);
 userRouter.get("/download-certificate", checkUserAuth, download);
 userRouter.put(
   "/add-completed-module",

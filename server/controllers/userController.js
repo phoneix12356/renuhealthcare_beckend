@@ -321,6 +321,16 @@ const addFullWatchedToUserDatabase = async (req, res) => {
   }
 };
 
+const getSingalUsers = async(req, res)=>{
+  const ids = req.params.id;
+  try{
+    const result = await userModal.findById(ids)
+    res.send(result)
+  }
+  catch(err){
+    res.send(err.message)
+  }
+}
 export {
   userRegistration,
   userLogin,
@@ -331,4 +341,5 @@ export {
   addCompletedModuleToUserDatabase,
   addCompletedTestToUserDatabase,
   addFullWatchedToUserDatabase,
+  getSingalUsers
 };
